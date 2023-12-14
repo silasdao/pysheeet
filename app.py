@@ -18,7 +18,7 @@ def find_key(token):
     for k, v in os.environ.items():
         if v == token and k.startswith("ACME_TOKEN_"):
             n = k.replace("ACME_TOKEN_", "")
-            return os.environ.get("ACME_KEY_{}".format(n))
+            return os.environ.get(f"ACME_KEY_{n}")
 
 
 csp = {
