@@ -25,10 +25,9 @@ class PysheeetTest(LiveServerTestCase):
     def create_app(self):
         """Create a app for test."""
         # remove env ACME_TOKEN*
-        for k, v in os.environ.items():
-            if not k.startswith("ACME_TOKEN"):
-                continue
-            del os.environ[k]
+        for k in os.environ:
+            if k.startswith("ACME_TOKEN"):
+                del os.environ[k]
 
         self.token = "token"
         self.key = "key"
@@ -70,7 +69,7 @@ class PysheeetTest(LiveServerTestCase):
         htmls = os.listdir(os.path.join(ROOT, "notes"))
         url = self.get_server_url()
         for h in htmls:
-            u = url + "/notes/" + h
+            u = f"{url}/notes/{h}"
             resp = requests.get(u)
             self.check_security_headers(resp)
             self.check_csrf_cookies(resp)
@@ -79,12 +78,12 @@ class PysheeetTest(LiveServerTestCase):
     def test_acme_req(self):
         """Test that send a request for a acme key."""
         url = self.get_server_url()
-        u = url + "/.well-known/acme-challenge/token"
+        u = f"{url}/.well-known/acme-challenge/token"
         resp = requests.get(u)
         self.check_security_headers(resp)
         self.assertEqual(resp.status_code, 200)
 
-        u = url + "/.well-known/acme-challenge/foo"
+        u = f"{url}/.well-known/acme-challenge/foo"
         resp = requests.get(u)
         self.check_security_headers(resp)
         self.assertEqual(resp.status_code, 404)
@@ -111,8 +110,8 @@ class PysheeetTest(LiveServerTestCase):
         key = self.key
         self.assertEqual(acme(token), key)
 
-        token = token + "_env"
-        key = key + "_env"
+        token = f"{token}_env"
+        key = f"{key}_env"
         os.environ["ACME_TOKEN_ENV"] = token
         os.environ["ACME_KEY_ENV"] = key
         self.assertEqual(find_key(token), key)
@@ -133,7 +132,7 @@ class PysheeetTest(LiveServerTestCase):
         htmls = os.listdir(os.path.join(ROOT, "notes"))
 
         for h in htmls:
-            u = "notes/" + h
+            u = f"notes/{h}"
             resp = static_proxy(u)
             self.assertEqual(resp.status_code, 200)
             resp.close()

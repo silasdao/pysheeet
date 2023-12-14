@@ -52,7 +52,7 @@ master_doc = 'index'
 # General information about the project.
 year = datetime.now().year
 project = u'pysheeet'
-copyright = u'2016-{}, crazyguitar'.format(year)
+copyright = f'2016-{year}, crazyguitar'
 author = u'crazyguitar'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -197,8 +197,7 @@ if has_carbonad:
     sidebar_notes.append('carbonad.html')
 
 sidebar_index.append('searchbox.html')
-sidebar_notes.append('localtoc.html')
-sidebar_notes.append('searchbox.html')
+sidebar_notes.extend(('localtoc.html', 'searchbox.html'))
 html_sidebars = {'index': sidebar_index, '**': sidebar_notes}
 
 
@@ -334,7 +333,7 @@ def add_html_link(app, pagename, templatename, context, doctree):
     """Append html page."""
     if pagename in ['404', 'search', 'genindex']:
         return
-    app.sitemaps.append(pagename + ".html")
+    app.sitemaps.append(f"{pagename}.html")
 
 
 def create_sitemap(app, exception):
@@ -354,7 +353,7 @@ def create_sitemap(app, exception):
         SubElement(url, "loc").text = app.pysheeet + link
         SubElement(url, "lastmod").text = now.date().isoformat()
 
-    f = app.outdir + "/sitemap.xml"
+    f = f"{app.outdir}/sitemap.xml"
     t = ElementTree(r)
     t.write(f, xml_declaration=True, encoding='utf-8', method="xml")
 
